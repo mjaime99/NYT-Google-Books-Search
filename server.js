@@ -13,7 +13,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Serve up static assets if in production (running on Heroku)
-app.use(express.static(__dirname + "/client/public"));
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(__dirname + "/client/public"));
+}
 
 // enable CORS, use:
 // https://enable-cors.org/server_expressjs.html
@@ -34,7 +36,7 @@ router.post("/api/saved", articlesController.insert);
 // delete saved articles
 router.delete("/api/saved/:id", articlesController.delete);
 // Send every other request to the React app
-router.get("/*", function(req, res) {
+router.get("/*", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
@@ -42,7 +44,7 @@ app.use(router);
 
 // Connect mongoose to our database
 const db = process.env.MONGODB_URI || "mongodb://localhost/nyt-react";
-mongoose.connect(db, function(error) {
+mongoose.connect(db, function (error) {
   // Log any errors connecting with mongoose
   if (error) {
     console.error(error);
@@ -54,6 +56,6 @@ mongoose.connect(db, function(error) {
 });
 
 // Start the server
-app.listen(PORT, function() {
+app.listen(PORT, function () {
   console.log(`🌎 ==> Server now on port ${PORT}!`);
 });
