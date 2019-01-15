@@ -13,8 +13,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Serve up static assets if in production (running on Heroku)
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(__dirname + "/client/public"));
+  app.use(express.static(path.join(__dirname, "client", "build")));
+  console.log("setting up static");
 }
 
 // enable CORS, use:
@@ -36,7 +38,7 @@ router.post("/api/saved", articlesController.insert);
 // delete saved articles
 router.delete("/api/saved/:id", articlesController.delete);
 // Send every other request to the React app
-router.get("/*", function (req, res) {
+router.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "./client/build/index.html"));
 });
 
